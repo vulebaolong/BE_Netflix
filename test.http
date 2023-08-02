@@ -6,9 +6,9 @@ POST http://localhost:3001/api/v1/QuanLyNguoiDung/DangKy
 Content-Type: application/json
 
 {
-  "taiKhoan": "vulebaolong1",
+  "taiKhoan": "vulebaolong",
   "matKhau": "123456",
-  "email": "vulebaolong1@gmail.com",
+  "email": "vulebaolong@gmail.com",
   "soDt": "0836789578",
   "hoTen": "Vũ Lê Bảo long"
 }
