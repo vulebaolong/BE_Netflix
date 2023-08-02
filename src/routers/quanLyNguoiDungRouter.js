@@ -4,5 +4,6 @@ const quanLyNguoiDungController = require("../controllers/quanLyNguoiDungControl
 const router = express.Router();
 
 router.post("/DangKy", quanLyNguoiDungController.dangKy);
+router.post("/DangNhap", quanLyNguoiDungController.dangNhap);
 
 module.exports = router;

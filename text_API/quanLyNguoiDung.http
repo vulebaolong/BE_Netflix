@@ -1,7 +1,7 @@
 GET http://localhost:3001/api/v1/welcome
 Content-Type: application/json
 
-### ĐĂNG NHẬP
+### ĐĂNG KÝ
 POST http://localhost:3001/api/v1/QuanLyNguoiDung/DangKy
 Content-Type: application/json
 
@@ -11,4 +11,13 @@ Content-Type: application/json
   "email": "vulebaolong@gmail.com",
   "soDt": "0836789578",
   "hoTen": "Vũ Lê Bảo long"
+}
+
+### ĐĂNG NHẬP
+POST http://localhost:3001/api/v1/QuanLyNguoiDung/DangNhap
+Content-Type: application/json
+
+{
+  "taiKhoan": "vulebaolong",
+  "matKhau": "123456"
 }

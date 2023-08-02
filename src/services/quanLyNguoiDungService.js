@@ -1,6 +1,8 @@
 const responsesHelper = require("../helpers/responsesHelper");
 const UserModel = require("../models/userModel");
 const { hashedPassword } = require("../helpers/authHelper");
+const { createJwt } = require("../helpers/authHelper");
+const { checkPassword } = require("../helpers/authHelper");
 
 const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
     if (!taiKhoan) return responsesHelper(400, "Thiếu tài khoản");
@@ -28,6 +30,31 @@ const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
     });
 };
 
+const dangNhap = async (taiKhoan, matKhau) => {
+    if (!taiKhoan) return responsesHelper(400, "Thiếu tài khoản");
+    if (!matKhau) return responsesHelper(400, "Thiếu mật khẩu");
+
+    const user = await UserModel.findOne({ taiKhoan }).select("+matKhau");
+    if (!user) return responsesHelper(401, "Tài khoản không tồn tại");
+
+    const isMatKhau = await checkPassword(matKhau, user.matKhau);
+    if (!isMatKhau) return responsesHelper(401, "Mật khẩu không đúng");
+
+    // tạo token
+    const accessToken = createJwt({ name: user.taiKhoan, email: user.email, soDt: user.soDt, hoTen: user.hoTen }, "1h");
+    if (!accessToken) return responsesHelper(500, "Lỗi server: Không tạo được token");
+
+    return responsesHelper(200, "Đăng nhập thành công", {
+        id: user._id,
+        taiKhoan: user.taiKhoan,
+        email: user.email,
+        soDt: user.soDt,
+        hoTen: user.hoTen,
+        accessToken,
+    });
+};
+
 module.exports = {
     dangKy,
+    dangNhap,
 };

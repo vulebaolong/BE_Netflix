@@ -11,7 +11,19 @@ const dangKy = async (req, res, next) => {
         next(error);
     }
 };
+const dangNhap = async (req, res, next) => {
+    try {
+        const { taiKhoan, matKhau } = req.body;
+
+        const result = await quanLyNguoiDungService.dangNhap(taiKhoan, matKhau);
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
 
 module.exports = {
     dangKy,
+    dangNhap
 };
