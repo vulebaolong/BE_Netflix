@@ -1,4 +1,4 @@
-const { getStorage, ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage");
+const { getStorage, ref, getDownloadURL, uploadBytesResumable, deleteObject } = require("firebase/storage");
 const multer = require("multer");
 const moment = require("moment");
 
@@ -24,10 +24,12 @@ const storage = getStorage();
 // Setting up multer as a middleware to grab photo uploads
 multer({ storage: multer.memoryStorage() });
 
-const uploadImgHelper = async (file) => {
-    const dateTime = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
+const uploadImg = async (file) => {
+    const dateTime = moment(new Date()).format("DD-MM-YYYY_HH:mm:ss");
 
-    const storageRef = ref(storage, `files/${file.originalname + " - " + dateTime}`);
+    const tenHinhAnh = `files/${file.originalname + "_" + dateTime}`;
+
+    const storageRef = ref(storage, tenHinhAnh);
 
     // Create file metadata including the content type
     const metadata = {
@@ -41,7 +43,26 @@ const uploadImgHelper = async (file) => {
     // Grab the public url
     const downloadURL = await getDownloadURL(snapshot.ref);
 
-    return downloadURL
+    return {
+        tenHinhAnh,
+        hinhAnh: downloadURL,
+    };
 };
 
-module.exports = uploadImgHelper;
+const deleteImg = async (tenHinhAnh) => {
+    try {
+        // Create a reference to the file to delete
+        const desertRef = ref(storage, tenHinhAnh);
+        // Delete the file
+        await deleteObject(desertRef);
+        return true;
+    } catch (error) {
+        console.log("error", error);
+        return false;
+    }
+};
+
+module.exports = {
+    uploadImg,
+    deleteImg
+};

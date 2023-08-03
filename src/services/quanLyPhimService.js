@@ -1,6 +1,6 @@
 const moment = require("moment");
 const responsesHelper = require("../helpers/responsesHelper");
-const uploadImgHelper = require("../helpers/uploadImgHelper");
+const { uploadImg, deleteImg } = require("../helpers/ImgHelper");
 const MovieModel = require("../models/movieModel");
 function convertToBoolean(value) {
     if (value === "true") return true;
@@ -17,6 +17,7 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
     if (!sapChieu) return responsesHelper(400, "Thiếu trạng thái sắp chiếu");
     if (!hot) return responsesHelper(400, "Thiếu trạng thái hot");
     if (!danhGia) return responsesHelper(400, "Thiếu trạng thái đánh giá");
+    if (!file) return responsesHelper(400, "Thiếu hình ảnh");
 
     dangChieu = convertToBoolean(dangChieu);
     sapChieu = convertToBoolean(sapChieu);
@@ -24,12 +25,23 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
     danhGia = +danhGia;
     ngayKhoiChieu = moment(ngayKhoiChieu, "DD/MM/YYYY").format("YYYY-MM-DDTHH:mm:ss");
 
-    const exitMove = MovieModel.findOne({tenPhim})
-    if (exitMove !== null) return responsesHelper(400, "Phim đã tồn tại");
+    const exitMove = await MovieModel.findOne({ tenPhim });
+    if (exitMove) return responsesHelper(400, "Phim đã tồn tại");
 
-    const hinhAnh = await uploadImgHelper(file);
+    const objHinhAnh = await uploadImg(file);
 
-    const movie = await MovieModel.create({ tenPhim, trailer, moTa, ngayKhoiChieu, dangChieu, sapChieu, hot, danhGia, hinhAnh });
+    const movie = await MovieModel.create({
+        tenPhim,
+        trailer,
+        moTa,
+        ngayKhoiChieu,
+        dangChieu,
+        sapChieu,
+        hot,
+        danhGia,
+        hinhAnh: objHinhAnh.hinhAnh,
+        tenHinhAnh: objHinhAnh.tenHinhAnh,
+    });
 
     return responsesHelper(200, "Xử lý thành công", {
         maPhim: movie._id,
@@ -45,6 +57,19 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
     });
 };
 
+const xoaPhim = async (maPhim) => {
+    const movie = await MovieModel.findById(maPhim);
+    console.log("movie.tenHinhAnh", movie.tenHinhAnh);
+    return await deleteImg(movie.tenHinhAnh);
+};
+
+const layDanhSachPhim = async () => {
+    const movies = await MovieModel.find();
+    return responsesHelper(200, "Xử lý thành công", movies);
+};
+
 module.exports = {
     themPhimUploadHinh,
+    xoaPhim,
+    layDanhSachPhim,
 };

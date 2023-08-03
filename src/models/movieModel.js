@@ -11,6 +11,7 @@ const movieSchema = new mongoose.Schema(
         hot: { type: Boolean },
         danhGia: { type: Number },
         hinhAnh: { type: String, trim: true },
+        tenHinhAnh: { type: String, trim: true },
         createdAt: { type: Date, default: Date.now },
     },
     {
