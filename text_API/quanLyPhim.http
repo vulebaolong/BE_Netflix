@@ -1,0 +1,8 @@
+### ThemPhimUploadHinh
+POST http://localhost:3001/api/v1/QuanLyPhim/ThemPhimUploadHinh
+Content-Type: application/json
+
+{
+  "taiKhoan": "vulebaolong",
+  "matKhau": "123456"
+}

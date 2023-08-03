@@ -1,12 +1,10 @@
-const express = require("express");
-
 const createMessage = (err) => {
     let message = err.message || "Internal Server Eror";
     if (err.code === 11000) message = `${Object.keys(err.keyValue)[0]}: ${err.keyValue[`${Object.keys(err.keyValue)[0]}`]} đã tồn tại`;
     return message;
 };
 
-const errorController = (err, req, res, next) => {
+const errorHelper = (err, req, res, next) => {
     console.dir(err);
 
     const message = createMessage(err);
@@ -25,4 +23,4 @@ const errorController = (err, req, res, next) => {
     });
 };
 
-module.exports = errorController;
+module.exports = errorHelper;

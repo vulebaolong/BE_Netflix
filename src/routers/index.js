@@ -1,7 +1,8 @@
 const express = require("express");
 const quanLyNguoiDungRouter = require("./quanLyNguoiDungRouter");
-const notFoundController = require("../controllers/notFoundController.js");
-const errorController = require("../controllers/errorController.js");
+const quanLyPhimRouter = require("./quanLyPhimRouter");
+const notFoundHelper = require("../helpers/notFoundHelper");
+const errorHelper = require("../helpers/errorHelper");
 
 const router = express.Router();
 
@@ -11,9 +12,10 @@ router.get("/welcome", (req, res) => {
 });
 
 router.use("/QuanLyNguoiDung", quanLyNguoiDungRouter);
+router.use("/QuanLyPhim", quanLyPhimRouter);
 
 //xử lý các URL người dùng sử dụng không đúng
-router.all("*", notFoundController);
-router.use(errorController);
+router.all("*", notFoundHelper);
+router.use(errorHelper);
 
 module.exports = router;

@@ -2,10 +2,12 @@
 const express = require("express");
 const routers = require("./src/routers");
 
+
 const app = express();
 
 // express.json(): body => JSON
 app.use(express.json());
+// app.use(express.urlencoded({ extended: true }))
 
 app.use("/api/v1", routers);
 
