@@ -2,6 +2,9 @@ const moment = require("moment");
 const responsesHelper = require("../helpers/responsesHelper");
 const { uploadImg, deleteImg } = require("../helpers/ImgHelper");
 const MovieModel = require("../models/movieModel");
+const HeThongRapModel = require("../models/heThongRapModel");
+const CumRapModel = require("../models/cumRapModel");
+const LichChieuModel = require("../models/lichChieuModel");
 function convertToBoolean(value) {
     if (value === "true") return true;
     if (value === "false") return false;
@@ -68,8 +71,110 @@ const layDanhSachPhim = async () => {
     return responsesHelper(200, "Xử lý thành công", movies);
 };
 
+const changeObj = (item) => {
+    return JSON.parse(JSON.stringify(item));
+};
+
+const layThongTinLichChieuHeThongRap = async () => {
+    const heThongRap = changeObj(await HeThongRapModel.find().select("logo maHeThongRap tenHeThongRap"));
+
+    const result = await Promise.all(
+        heThongRap.map(async (item) => {
+            item.lstCumRap = changeObj(
+                await CumRapModel.find({
+                    maHeThongRap_ID: item.maHeThongRap,
+                    lichChieuTheoCumRap: { $exists: true, $ne: [] }, // Điều kiện chỉ lấy những document có lichChieuTheoCumRap không rỗng
+                }).select("maCumRap tenCumRap diaChi hinhAnh")
+            );
+
+            item.lstCumRap = await Promise.all(
+                item.lstCumRap.map(async (item2) => {
+                    // item2.danhSachPhim = await MovieModel.aggregate([
+                    //     // Lọc các documents có maCumRap_ID là "bhd-star-cineplex-3-2"
+                    //     { $match: { "lichChieuTheoPhim.maCumRap_ID": item2.maCumRap } },
+                    //     // Giữ lại chỉ những phần tử trong mảng lichChieuTheoPhim có maCumRap_ID là "bhd-star-cineplex-3-2"
+                    //     {
+                    //         $project: {
+                    //             dangChieu: 1,
+                    //             hinhAnh: 1,
+                    //             hot: 1,
+                    //             sapChieu: 1,
+                    //             tenPhim: 1,
+                    //             lichChieuTheoPhim: {
+                    //                 $filter: {
+                    //                     input: "$lichChieuTheoPhim",
+                    //                     as: "lichChieu",
+                    //                     cond: { $eq: ["$$lichChieu.maCumRap_ID", item2.maCumRap] },
+                    //                 },
+                    //             },
+                    //         },
+                    //     },
+                    // ]);
+
+                    item2.danhSachPhim = await MovieModel.aggregate([
+                        // Lọc các documents có maCumRap_ID là "bhd-star-cineplex-3-2"
+                        { $match: { "lichChieuTheoPhim.maCumRap_ID": item2.maCumRap } },
+                        // Giữ lại chỉ những phần tử trong mảng lichChieuTheoPhim có maCumRap_ID là "bhd-star-cineplex-3-2"
+                        {
+                            $project: {
+                                dangChieu: 1,
+                                hinhAnh: 1,
+                                hot: 1,
+                                sapChieu: 1,
+                                tenPhim: 1,
+                                lichChieuTheoPhim: {
+                                    $filter: {
+                                        input: "$lichChieuTheoPhim",
+                                        as: "lichChieu",
+                                        cond: { $eq: ["$$lichChieu.maCumRap_ID", item2.maCumRap] },
+                                    },
+                                },
+                            },
+                        },
+                        // Giữ lại chỉ các trường cần thiết trong mảng lichChieuTheoPhim
+                        {
+                            $project: {
+                                "dangChieu": 1,
+                                "hinhAnh": 1,
+                                "hot": 1,
+                                "sapChieu": 1,
+                                "tenPhim": 1,
+                                "lichChieuTheoPhim._id": 1,
+                                "lichChieuTheoPhim.maPhim_ID": 1,
+                                "lichChieuTheoPhim.maCumRap_ID": 1,
+                                "lichChieuTheoPhim.ngayChieuGioChieu": 1,
+                                "lichChieuTheoPhim.giaVe": 1,
+                            },
+                        },
+                    ]);
+
+                    return item2;
+                })
+            );
+
+            return item;
+        })
+    );
+
+    return responsesHelper(200, "Xử lý thành công", result);
+};
+
 module.exports = {
     themPhimUploadHinh,
     xoaPhim,
     layDanhSachPhim,
+    layThongTinLichChieuHeThongRap,
 };
+// TẠO HỆ THỐNG RẠP
+// const result = await HeThongRapModel.create({
+//     maHeThongRap: "Galaxy",
+//     tenHeThongRap: "Galaxy Cinema",
+//     logo: "https://movienew.cybersoft.edu.vn/hinhanh/galaxy-cinema.png",
+// })
+
+// const result = await LichChieuModel.create({
+//     maPhim_ID: "64cbba1fdd8ef8bf313f6e24",
+//     maCumRap_ID: "glx-kinh-duong-vuong",
+//     ngayChieuGioChieu: "15/08/2023 16:37:00",
+//     giaVe: 75000
+// });

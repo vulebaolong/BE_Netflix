@@ -12,14 +12,16 @@ const movieSchema = new mongoose.Schema(
         danhGia: { type: Number },
         hinhAnh: { type: String, trim: true },
         tenHinhAnh: { type: String, trim: true },
-        createdAt: { type: Date, default: Date.now },
+        lichChieuTheoPhim: {
+            type: [Object],
+            default: [],
+        },
     },
     {
         collection: "movies",
         timestamps: true,
     }
 );
-
 
 // Tạo model User dựa trên schema đã định nghĩa
 const MovieModel = mongoose.model("Movie", movieSchema);
