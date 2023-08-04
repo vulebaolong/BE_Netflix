@@ -22,8 +22,20 @@ const createJwt = (payload, expiresIn) => {
     return token;
 };
 
+const verifyJwt = (accessToken) => {
+    const secret = process.env.SECRET;
+
+    // Giải mã JWT
+    const decodedToken = jwt.verify(accessToken, secret);
+
+    // Lấy ra các thông tin trong JWT
+
+    return decodedToken;
+};
+
 module.exports = {
     hashedPassword,
     createJwt,
     checkPassword,
+    verifyJwt,
 };

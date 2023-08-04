@@ -67,7 +67,7 @@ const xoaPhim = async (maPhim) => {
 };
 
 const layDanhSachPhim = async () => {
-    const movies = await MovieModel.find();
+    const movies = await MovieModel.find().select("-lichChieuTheoPhim -createdAt -updatedAt -__v -tenHinhAnh");
     return responsesHelper(200, "Xử lý thành công", movies);
 };
 
