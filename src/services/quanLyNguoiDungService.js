@@ -27,6 +27,7 @@ const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
         email: user.email,
         soDt: user.soDt,
         hoTen: user.hoTen,
+        matKhau,
     });
 };
 
