@@ -8,8 +8,9 @@ const changeObj = (item) => {
 };
 const layThongTinLichChieuPhim = async (maPhim) => {
     const heThongRap = changeObj(await HeThongRapModel.find().select("logo maHeThongRap tenHeThongRap"));
+    const movie = changeObj(await MovieModel.findById(maPhim).select("-lichChieuTheoPhim -__v -updatedAt -createdAt"));
 
-    const result = await Promise.all(
+    const heThongRapChieu = await Promise.all(
         heThongRap.map(async (item) => {
             item.cumRapChieu = changeObj(
                 await CumRapModel.find({
@@ -34,6 +35,10 @@ const layThongTinLichChieuPhim = async (maPhim) => {
             return item;
         })
     );
+    const result = {
+        ...movie,
+        heThongRapChieu,
+    };
     return responsesHelper(200, "Xử lý thành công", result);
 };
 
