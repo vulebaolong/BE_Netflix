@@ -28,7 +28,7 @@ const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
         soDt: user.soDt,
         hoTen: user.hoTen,
         matKhau,
-        maLoaiNguoiDung: user,
+        maLoaiNguoiDung: user.maLoaiNguoiDung,
     });
 };
 
@@ -53,6 +53,7 @@ const dangNhap = async (taiKhoan, matKhau) => {
         soDt: user.soDt,
         hoTen: user.hoTen,
         accessToken,
+        maLoaiNguoiDung: user.maLoaiNguoiDung,
     });
 };
 
