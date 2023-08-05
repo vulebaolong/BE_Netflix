@@ -24,7 +24,7 @@ const createJwt = (payload, expiresIn) => {
 
 const verifyJwt = (accessToken) => {
     const secret = process.env.SECRET;
-
+    
     // Giải mã JWT
     const decodedToken = jwt.verify(accessToken, secret);
 
