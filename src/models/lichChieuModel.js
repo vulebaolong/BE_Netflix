@@ -6,13 +6,13 @@ const LichChieuSchema = new mongoose.Schema(
         maCumRap_ID: { type: String, trim: true },
         ngayChieuGioChieu: { type: String, trim: true },
         giaVe: { type: Number, trim: true },
+        danhSachVe: [Object],
     },
     {
         collection: "LichChieu",
         timestamps: true,
     }
 );
-
 
 // Tạo model User dựa trên schema đã định nghĩa
 const LichChieuModel = mongoose.model("LichChieu", LichChieuSchema);

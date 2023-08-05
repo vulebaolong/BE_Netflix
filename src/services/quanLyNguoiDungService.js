@@ -41,7 +41,7 @@ const dangNhap = async (taiKhoan, matKhau) => {
     if (!isMatKhau) return responsesHelper(401, "Mật khẩu không đúng");
 
     // tạo token
-    const accessToken = createJwt({ name: user.taiKhoan, email: user.email, soDt: user.soDt, hoTen: user.hoTen }, "1h");
+    const accessToken = createJwt({ taiKhoan: user.taiKhoan, email: user.email, soDt: user.soDt, hoTen: user.hoTen }, "1h");
     if (!accessToken) return responsesHelper(500, "Lỗi server: Không tạo được token");
 
     return responsesHelper(200, "Đăng nhập thành công", {

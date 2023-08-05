@@ -2,6 +2,7 @@ const express = require("express");
 const quanLyNguoiDungRouter = require("./quanLyNguoiDungRouter");
 const quanLyPhimRouter = require("./quanLyPhimRouter");
 const quanLyDatVeRouter = require("./quanLyDatVeRouter");
+const quanLyRapRouter = require("./quanLyRapRouter");
 const notFoundHelper = require("../helpers/notFoundHelper");
 const errorHelper = require("../helpers/errorHelper");
 
@@ -15,6 +16,7 @@ router.get("/welcome", (req, res) => {
 router.use("/QuanLyNguoiDung", quanLyNguoiDungRouter);
 router.use("/QuanLyPhim", quanLyPhimRouter);
 router.use("/QuanLyDatVe", quanLyDatVeRouter);
+router.use("/QuanLyRap", quanLyRapRouter);
 
 //xử lý các URL người dùng sử dụng không đúng
 router.all("*", notFoundHelper);

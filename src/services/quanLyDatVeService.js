@@ -2,7 +2,9 @@ const responsesHelper = require("../helpers/responsesHelper");
 const CumRapModel = require("../models/cumRapModel");
 const LichChieuModel = require("../models/lichChieuModel");
 const MovieModel = require("../models/movieModel");
-
+const changeObj = (item) => {
+    return JSON.parse(JSON.stringify(item));
+};
 const taoLichChieu = async (maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe) => {
     // const newData = { maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe };
 
@@ -12,8 +14,8 @@ const taoLichChieu = async (maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe) =>
     if (!movie) return responsesHelper(400, "Xử Lý Không Thành Công", "Không tìm thấy phim");
     if (!cumrap) return responsesHelper(400, "Xử Lý Không Thành Công", "Không tìm thấy cum rạp");
 
-    const lichChieu = await LichChieuModel.create({ maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe });
-
+    const lichChieu = changeObj(await LichChieuModel.create({ maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe }));
+    delete lichChieu.danhSachVe;
     // Cập nhật dữ liệu cho các bản ghi phim
     await MovieModel.updateMany({ _id: maPhim_ID }, { $push: { lichChieuTheoPhim: lichChieu } });
 
@@ -27,7 +29,7 @@ const layDanhSachPhongVe = async (maLichChieu) => {
     const lichChieu = await LichChieuModel.findById(maLichChieu);
     const cumRap = await CumRapModel.findOne({ maCumRap: lichChieu.maCumRap_ID });
     const movie = await MovieModel.findById(lichChieu.maPhim_ID).select("tenPhim hinhAnh");
-
+    const { danhSachVe } = lichChieu;
     const renderGiaVe = (loaiGhe) => {
         let giaVe = lichChieu.giaVe;
         if (loaiGhe === "Vip") {
@@ -58,13 +60,21 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 
             const giaVe = renderGiaVe(loaiGhe);
 
+            const gheDaDat = danhSachVe.find((ve) => {
+                const stt = ve.maGhe.split("-")[1];
+                if (stt === tenGhe) return true;
+            });
+
+            const taiKhoanNguoiDat = gheDaDat !== undefined ? gheDaDat.taiKhoanNguoiDat : null;
+            const daDat = gheDaDat !== undefined ? true : false;
+
             return {
-                daDat: false,
+                daDat,
                 giaVe,
                 loaiGhe,
                 maGhe: `${lichChieu._id}-${tenGhe}`,
                 tenGhe,
-                taiKhoanNguoiDatL: null,
+                taiKhoanNguoiDat,
             };
         });
 
@@ -85,12 +95,34 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 };
 
 const datVe = async (maLichChieu, danhSachVe, user) => {
-    
-    return responsesHelper(200, "Xử Lý Thành Công", { maLichChieu, danhSachVe, user });
+    const danhSachVeNew = danhSachVe.map((ve, i) => {
+        const maLichChieu_ID = ve.maGhe.split("-")[0];
+
+        const stt = ve.maGhe.split("-")[1];
+
+        if (maLichChieu_ID !== maLichChieu) return "Có vé có lịch chiếu không hợp lệ";
+
+        if (!(+stt >= 1 && +stt <= 160 && +stt === i + 1)) return "Số thứ tự của vé không hợp lệ";
+
+        return {
+            ...ve,
+            taiKhoanNguoiDat: user.taiKhoan,
+        };
+    });
+
+    const isDanhSachVeNew = danhSachVeNew.find((ve) => {
+        if (typeof ve === "string") return true;
+    });
+
+    if (isDanhSachVeNew) return responsesHelper(200, "Xử Lý Không Thành Công", isDanhSachVeNew);
+
+    await LichChieuModel.findByIdAndUpdate(maLichChieu, { $push: { danhSachVe: { $each: danhSachVeNew } } });
+
+    return responsesHelper(200, "Xử Lý Thành Công", "Đặt vé thành công");
 };
 
 module.exports = {
     taoLichChieu,
     layDanhSachPhongVe,
-    datVe
+    datVe,
 };
