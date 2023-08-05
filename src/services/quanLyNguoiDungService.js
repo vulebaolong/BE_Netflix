@@ -3,6 +3,9 @@ const UserModel = require("../models/userModel");
 const { hashedPassword } = require("../helpers/authHelper");
 const { createJwt } = require("../helpers/authHelper");
 const { checkPassword } = require("../helpers/authHelper");
+const DatVeModel = require("../models/datVeModel");
+const MovieModel = require("../models/movieModel");
+const LichChieuModel = require("../models/lichChieuModel");
 
 const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
     if (!taiKhoan) return responsesHelper(400, "Thiếu tài khoản");
@@ -102,10 +105,52 @@ const capNhatMatKhau = async (matKhauCurent, matKhauNew, user) => {
     return responsesHelper(200, "Xử lý thành công", "Thay đổi mật khẩu thành công");
 };
 
+const changeObj = (item) => {
+    return JSON.parse(JSON.stringify(item));
+};
+
+const thongTinDatVe = async (user) => {
+    const datVe = changeObj(await DatVeModel.findOne({ user_ID: user.id }).select("-createdAt -updatedAt -__v"));
+    const userDb = changeObj(await UserModel.findById(user.id).select("-createdAt -updatedAt -__v"));
+    delete userDb._id;
+
+    let thongTinDatVe = [];
+
+    if (datVe) {
+        thongTinDatVe = await Promise.all(
+            datVe.thongTinDatVe.map(async (item) => {
+                const movie = changeObj(await MovieModel.findById(item.maPhim_ID).select("tenPhim hinhAnh"));
+                delete movie._id;
+
+                const danhSachGhe = await Promise.all(
+                    item.danhSachGhe.map(async (item2) => {
+                        const lichChieu = changeObj(await LichChieuModel.findById(item2));
+                        const listGhe = lichChieu.danhSachVe.filter((item3) => item3.taiKhoanNguoiDat === user.taiKhoan);
+                        return listGhe;
+                    })
+                );
+
+                return {
+                    danhSachGhe: danhSachGhe.flatMap((arr) => arr),
+                    ...movie,
+                };
+            })
+        );
+    }
+
+    const result = {
+        ...userDb,
+        thongTinDatVe,
+    };
+
+    return responsesHelper(200, "Xử lý thành công", result);
+};
+
 module.exports = {
     dangKy,
     dangNhap,
     thongTinTaiKhoan,
     capNhatThongTinNguoiDung,
     capNhatMatKhau,
+    thongTinDatVe,
 };

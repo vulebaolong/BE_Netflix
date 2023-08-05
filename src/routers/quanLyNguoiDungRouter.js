@@ -10,6 +10,7 @@ router.post("/DangNhap", quanLyNguoiDungController.dangNhap);
 //! những dòng mã chạy sau sẽ đều có protect, vì chạy theo thứ tự
 router.use(authController.protect);
 router.get("/ThongTinTaiKhoan", quanLyNguoiDungController.thongTinTaiKhoan);
+router.get("/ThongTinDatVe", quanLyNguoiDungController.thongTinDatVe);
 router.put("/CapNhatThongTinNguoiDung", quanLyNguoiDungController.capNhatThongTinNguoiDung);
 router.put("/CapNhatMatKhau", quanLyNguoiDungController.capNhatMatKhau);
 

@@ -60,10 +60,21 @@ const capNhatMatKhau = async (req, res, next) => {
     }
 };
 
+const thongTinDatVe = async (req, res, next) => {
+    try {
+        const result = await quanLyNguoiDungService.thongTinDatVe(req.user);
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     dangKy,
     dangNhap,
     thongTinTaiKhoan,
     capNhatThongTinNguoiDung,
     capNhatMatKhau,
+    thongTinDatVe,
 };

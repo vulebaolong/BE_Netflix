@@ -1,7 +1,9 @@
 const responsesHelper = require("../helpers/responsesHelper");
 const CumRapModel = require("../models/cumRapModel");
+const DatVeModel = require("../models/datVeModel");
 const LichChieuModel = require("../models/lichChieuModel");
 const MovieModel = require("../models/movieModel");
+const UserModel = require("../models/userModel");
 const changeObj = (item) => {
     return JSON.parse(JSON.stringify(item));
 };
@@ -95,14 +97,15 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 };
 
 const datVe = async (maLichChieu, danhSachVe, user) => {
+    // kiểm tra danh sách vé gửi lên
     const danhSachVeNew = danhSachVe.map((ve, i) => {
         const maLichChieu_ID = ve.maGhe.split("-")[0];
 
         const stt = ve.maGhe.split("-")[1];
 
-        if (maLichChieu_ID !== maLichChieu) return "Có vé có lịch chiếu không hợp lệ";
+        if (maLichChieu_ID !== maLichChieu) return "Vé có lịch chiếu không hợp lệ";
 
-        if (!(+stt >= 1 && +stt <= 160 && +stt === i + 1)) return "Số thứ tự của vé không hợp lệ";
+        if (!(+stt >= 1 && +stt <= 160 )) return "Số thứ tự của vé không hợp lệ";
 
         return {
             ...ve,
@@ -113,12 +116,61 @@ const datVe = async (maLichChieu, danhSachVe, user) => {
     const isDanhSachVeNew = danhSachVeNew.find((ve) => {
         if (typeof ve === "string") return true;
     });
+    // nếu vé có vấn đề trả lại lỗi
+    if (isDanhSachVeNew) return responsesHelper(400, "Xử Lý Không Thành Công", isDanhSachVeNew);
 
-    if (isDanhSachVeNew) return responsesHelper(200, "Xử Lý Không Thành Công", isDanhSachVeNew);
+    const lichChieu = await LichChieuModel.findByIdAndUpdate(maLichChieu, { $push: { danhSachVe: { $each: danhSachVeNew } } });
+    // const lichChieu = await LichChieuModel.findById(maLichChieu);
 
-    await LichChieuModel.findByIdAndUpdate(maLichChieu, { $push: { danhSachVe: { $each: danhSachVeNew } } });
+    // Tìm DatVeModel có user_ID = user
+    const datVe = await DatVeModel.findOne({ user_ID: user.id });
 
-    return responsesHelper(200, "Xử Lý Thành Công", "Đặt vé thành công");
+    if (!datVe) {
+        console.log("Không tìm thấy DatVeModel với user_ID = user.");
+        // create cái mới
+        const datVeNew = await DatVeModel.create({
+            user_ID: user.id,
+            thongTinDatVe: [
+                {
+                    danhSachGhe: [maLichChieu],
+                    maPhim_ID: lichChieu.maPhim_ID,
+                },
+            ],
+        });
+        return responsesHelper(200, "Xử Lý Thành Công", datVeNew);
+    }
+
+    // Tìm thongTinDatVe có maPhim_ID = maPhim
+    const index = datVe.thongTinDatVe.findIndex((item) => item.maPhim_ID === lichChieu.maPhim_ID);
+
+    if (index === -1) {
+        console.log("Không tìm thấy thongTinDatVe với maPhim_ID = lichChieu.maPhim_ID.");
+
+        // nếu không tìm thấy thì tạo mới obj trong thongTinDatVe
+        datVe.thongTinDatVe.push({ danhSachGhe: [maLichChieu], maPhim_ID: lichChieu.maPhim_ID });
+
+        datVe.markModified("thongTinDatVe");
+
+        // Lưu lại dữ liệu đã cập nhật
+        await datVe.save();
+
+        return responsesHelper(200, "Xử Lý Thành Công", datVe);
+    }
+
+    // Kiểm tra nếu maLichChieu chưa có trong danhSachGhe
+    if (!datVe.thongTinDatVe[index].danhSachGhe.includes(maLichChieu)) {
+        // Thêm maLichChieu vào danhSachGhe
+        datVe.thongTinDatVe[index].danhSachGhe.push(maLichChieu);
+
+        datVe.markModified("thongTinDatVe");
+
+        // Lưu lại dữ liệu đã cập nhật
+        await datVe.save();
+
+        return responsesHelper(200, "Xử Lý Thành Công", datVe);
+    }
+
+    return responsesHelper(200, "Xử Lý Thành Công", datVe);
 };
 
 module.exports = {
