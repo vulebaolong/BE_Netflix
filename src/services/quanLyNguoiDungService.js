@@ -70,8 +70,45 @@ const thongTinTaiKhoan = async (user) => {
     });
 };
 
+const capNhatThongTinNguoiDung = async (email, hoTen, maLoaiNguoiDung, soDt, taiKhoan, user) => {
+    if (!email) return responsesHelper(400, "Thiếu email");
+    if (!hoTen) return responsesHelper(400, "Thiếu họ tên");
+    if (!maLoaiNguoiDung) return responsesHelper(400, "Thiếu mã loại nơiời dùng");
+    if (!soDt) return responsesHelper(400, "Thiếu số điện thoại");
+    if (!taiKhoan) return responsesHelper(400, "Thiếu tài khoản");
+
+    const userUpdate = await UserModel.findByIdAndUpdate(user.id, { email, hoTen, maLoaiNguoiDung, soDt, taiKhoan }, { new: true });
+
+    return responsesHelper(200, "Xử lý thành công", userUpdate);
+};
+
+const capNhatMatKhau = async (matKhauCurent, matKhauNew, user) => {
+    if (!matKhauCurent) return responsesHelper(400, "Thiếu mật khẩu hiện tại");
+    if (!matKhauNew) return responsesHelper(400, "Thiếu mật khẩu mới");
+
+    const userDb = await UserModel.findById(user.id).select("+matKhau");
+    const matKhauDb = userDb.matKhau;
+    console.log(userDb);
+    console.log(matKhauCurent, matKhauNew);
+
+    // kiểm tra mật khẩu current
+    const isMatKhauCurrent = await checkPassword(matKhauCurent, matKhauDb);
+    if (!isMatKhauCurrent) return responsesHelper(400, "Xử lý không thành công", "Mật khẩu hiện tại không chính xác");
+
+    // mã hoá mật khẩu mới
+    const matKhauNewDb = await hashedPassword(matKhauNew);
+
+    // lưu mật khẩu mới vào db
+    await UserModel.findByIdAndUpdate(user.id, { matKhau: matKhauNewDb });
+
+    console.log(isMatKhauCurrent);
+    return responsesHelper(200, "Xử lý thành công", "Thay đổi mật khẩu thành công");
+};
+
 module.exports = {
     dangKy,
     dangNhap,
     thongTinTaiKhoan,
+    capNhatThongTinNguoiDung,
+    capNhatMatKhau,
 };

@@ -34,8 +34,36 @@ const thongTinTaiKhoan = async (req, res, next) => {
     }
 };
 
+const capNhatThongTinNguoiDung = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { email, hoTen, maLoaiNguoiDung, soDt, taiKhoan } = req.body;
+
+        const result = await quanLyNguoiDungService.capNhatThongTinNguoiDung(email, hoTen, maLoaiNguoiDung, soDt, taiKhoan, user);
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const capNhatMatKhau = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { matKhauCurent, matKhauNew } = req.body;
+
+        const result = await quanLyNguoiDungService.capNhatMatKhau(matKhauCurent, matKhauNew, user);
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     dangKy,
     dangNhap,
     thongTinTaiKhoan,
+    capNhatThongTinNguoiDung,
+    capNhatMatKhau,
 };
