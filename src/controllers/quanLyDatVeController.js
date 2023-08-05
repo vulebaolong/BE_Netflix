@@ -6,7 +6,7 @@ const taoLichChieu = async (req, res, next) => {
 
         const result = await quanLyDatVeService.taoLichChieu(maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe);
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }
@@ -18,7 +18,7 @@ const layDanhSachPhongVe = async (req, res, next) => {
 
         const result = await quanLyDatVeService.layDanhSachPhongVe(maLichChieu);
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }
@@ -32,7 +32,7 @@ const datVe = async (req, res, next) => {
 
         const result = await quanLyDatVeService.datVe(maLichChieu, danhSachVe, user);
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }

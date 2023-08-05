@@ -6,7 +6,7 @@ const themPhimUploadHinh = async (req, res, next) => {
 
         const result = await quanLyPhimService.themPhimUploadHinh(req.file, tenPhim, trailer, moTa, ngayKhoiChieu, dangChieu, sapChieu, hot, danhGia);
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }
@@ -28,7 +28,7 @@ const layDanhSachPhim = async (req, res, next) => {
     try {
         const result = await quanLyPhimService.layDanhSachPhim();
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }
@@ -38,7 +38,7 @@ const layThongTinLichChieuHeThongRap = async (req, res, next) => {
     try {
         const result = await quanLyPhimService.layThongTinLichChieuHeThongRap();
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }

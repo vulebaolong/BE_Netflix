@@ -6,7 +6,7 @@ const layThongTinLichChieuPhim = async (req, res, next) => {
 
         const result = await quanLyRapController.layThongTinLichChieuPhim(maPhim);
 
-        res.status(200).json(result);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }

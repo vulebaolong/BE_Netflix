@@ -88,8 +88,6 @@ const capNhatMatKhau = async (matKhauCurent, matKhauNew, user) => {
 
     const userDb = await UserModel.findById(user.id).select("+matKhau");
     const matKhauDb = userDb.matKhau;
-    console.log(userDb);
-    console.log(matKhauCurent, matKhauNew);
 
     // kiểm tra mật khẩu current
     const isMatKhauCurrent = await checkPassword(matKhauCurent, matKhauDb);
@@ -101,7 +99,6 @@ const capNhatMatKhau = async (matKhauCurent, matKhauNew, user) => {
     // lưu mật khẩu mới vào db
     await UserModel.findByIdAndUpdate(user.id, { matKhau: matKhauNewDb });
 
-    console.log(isMatKhauCurrent);
     return responsesHelper(200, "Xử lý thành công", "Thay đổi mật khẩu thành công");
 };
 
