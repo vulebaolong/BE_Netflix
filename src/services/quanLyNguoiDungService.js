@@ -28,6 +28,7 @@ const dangKy = async (taiKhoan, matKhau, email, soDt, hoTen) => {
         soDt: user.soDt,
         hoTen: user.hoTen,
         matKhau,
+        maLoaiNguoiDung: user,
     });
 };
 
