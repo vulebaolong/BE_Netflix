@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
         },
         soDt: { type: String, trim: true },
         hoTen: { type: String, trim: true },
-        createdAt: { type: Date, default: Date.now },
+        maLoaiNguoiDung: { type: String, trim: true, default: "KhachHang", },
     },
     {
         collection: "users",
