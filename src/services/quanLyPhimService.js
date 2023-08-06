@@ -159,22 +159,15 @@ const layThongTinLichChieuHeThongRap = async () => {
     return responsesHelper(200, "Xử lý thành công", result);
 };
 
+const layThongTinPhim = async (maPhim) => {
+    const movie = await MovieModel.findById(maPhim).select("-createdAt -updatedAt -__v -lichChieuTheoPhim -tenHinhAnh");
+    return responsesHelper(200, "Xử lý thành công", movie);
+};
+
 module.exports = {
     themPhimUploadHinh,
     xoaPhim,
     layDanhSachPhim,
     layThongTinLichChieuHeThongRap,
+    layThongTinPhim,
 };
-// TẠO HỆ THỐNG RẠP
-// const result = await HeThongRapModel.create({
-//     maHeThongRap: "Galaxy",
-//     tenHeThongRap: "Galaxy Cinema",
-//     logo: "https://movienew.cybersoft.edu.vn/hinhanh/galaxy-cinema.png",
-// })
-
-// const result = await LichChieuModel.create({
-//     maPhim_ID: "64cbba1fdd8ef8bf313f6e24",
-//     maCumRap_ID: "glx-kinh-duong-vuong",
-//     ngayChieuGioChieu: "15/08/2023 16:37:00",
-//     giaVe: 75000
-// });
