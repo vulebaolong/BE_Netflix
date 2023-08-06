@@ -25,9 +25,9 @@ const storage = getStorage();
 multer({ storage: multer.memoryStorage() });
 
 const uploadImg = async (file) => {
-    const dateTime = moment(new Date()).format("DD-MM-YYYY_HH:mm:ss");
+    const dateTime = moment(new Date()).format("DD_MM_YYYY-HH_mm_ss");
 
-    const tenHinhAnh = `files/${file.originalname + "_" + dateTime}`;
+    const tenHinhAnh = `files/${dateTime+file.originalname}`;
 
     const storageRef = ref(storage, tenHinhAnh);
 
