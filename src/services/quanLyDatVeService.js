@@ -97,6 +97,9 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 };
 
 const datVe = async (maLichChieu, danhSachVe, user) => {
+    const lichChieuCheck = await LichChieuModel.findById(maLichChieu);
+    const danhSachVeCheck = lichChieuCheck.danhSachVe;
+
     // kiểm tra danh sách vé gửi lên
     const danhSachVeNew = danhSachVe.map((ve, i) => {
         const maLichChieu_ID = ve.maGhe.split("-")[0];
@@ -105,7 +108,11 @@ const datVe = async (maLichChieu, danhSachVe, user) => {
 
         if (maLichChieu_ID !== maLichChieu) return "Vé có lịch chiếu không hợp lệ";
 
-        if (!(+stt >= 1 && +stt <= 160 )) return "Số thứ tự của vé không hợp lệ";
+        if (!(+stt >= 1 && +stt <= 160)) return "Số thứ tự của vé không hợp lệ";
+
+        const isDanhSachVeCheck = danhSachVeCheck.findIndex((item) => item.maGhe === ve.maGhe);
+
+        if (isDanhSachVeCheck !== -1) return `Ghế ${ve} đã được đặt`;
 
         return {
             ...ve,
