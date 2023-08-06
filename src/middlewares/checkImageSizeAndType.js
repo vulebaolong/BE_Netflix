@@ -2,11 +2,10 @@ const responsesHelper = require("../helpers/responsesHelper");
 
 // Middleware kiểm tra hình ảnh và dung lượng dưới 1MB
 const checkImageSizeAndType = (req, res, next) => {
-    // Kiểm tra xem có file được tải lên không
-    if (!req.file) {
-        const result = responsesHelper(400, "Xử lý không thành công", "Vui lòng chọn một tệp hình ảnh.");
-        return res.status(result.code).json(result);
-    }
+    // chỉ kiểm tra kích thước và type khi có hình ảnh
+    // nếu không có hình ảnh gửi lên sẽ được đi tiếp capNhatPhim hoặc themPhimUploadHinh
+    // để kiểm tra tiếp tục
+    if (!req.file) return next();
 
     // Kiểm tra kiểu của tệp (hình ảnh)
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];

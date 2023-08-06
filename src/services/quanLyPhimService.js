@@ -174,17 +174,23 @@ const capNhatPhim = async (file, maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, 
     if (!sapChieu) return responsesHelper(400, "Thiếu trạng thái sắp chiếu");
     if (!hot) return responsesHelper(400, "Thiếu trạng thái hot");
     if (!danhGia) return responsesHelper(400, "Thiếu trạng thái đánh giá");
-    if (!file) return responsesHelper(400, "Thiếu hình ảnh");
-    // console.log(file);
 
     const movie = await MovieModel.findById(maPhim);
     if (!movie) return responsesHelper(400, "Xử lý không thành công", `Tên phim: ${tenPhim} không tồn tại`);
 
-    // xoá ảnh cũ
-    await deleteImg(movie.tenHinhAnh);
+    let objHinhAnh = {
+        hinhAnh: movie.hinhAnh,
+        tenHinhAnh: movie.tenHinhAnh,
+    };
 
-    // thêm ảnh mới
-    const objHinhAnh = await uploadImg(file);
+    // nếu file hình ảnh tồn tại thì mới update hình ảnh
+    if (file) {
+        // xoá ảnh cũ
+        await deleteImg(movie.tenHinhAnh);
+
+        // thêm ảnh mới
+        objHinhAnh = await uploadImg(file);
+    }
 
     // update phim
     const movieUpdate = await MovieModel.findByIdAndUpdate(
