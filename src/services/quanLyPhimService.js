@@ -5,6 +5,7 @@ const MovieModel = require("../models/movieModel");
 const HeThongRapModel = require("../models/heThongRapModel");
 const CumRapModel = require("../models/cumRapModel");
 const LichChieuModel = require("../models/lichChieuModel");
+const isFileValidHelper = require("../helpers/isFileValidHelper");
 function convertToBoolean(value) {
     if (value === "true") return true;
     if (value === "false") return false;
@@ -26,7 +27,7 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
     sapChieu = convertToBoolean(sapChieu);
     hot = convertToBoolean(hot);
     danhGia = +danhGia;
-    ngayKhoiChieu = moment(ngayKhoiChieu, "DD/MM/YYYY").format("YYYY-MM-DDTHH:mm:ss");
+    // ngayKhoiChieu = moment(ngayKhoiChieu, "DD/MM/YYYY").format("YYYY-MM-DDTHH:mm:ss");
 
     const exitMove = await MovieModel.findOne({ tenPhim });
     if (exitMove) return responsesHelper(400, "Phim đã tồn tại");
@@ -161,6 +162,7 @@ const layThongTinLichChieuHeThongRap = async () => {
 
 const layThongTinPhim = async (maPhim) => {
     const movie = await MovieModel.findById(maPhim).select("-createdAt -updatedAt -__v -lichChieuTheoPhim -tenHinhAnh");
+    console.log(movie);
     return responsesHelper(200, "Xử lý thành công", movie);
 };
 
@@ -174,7 +176,7 @@ const capNhatPhim = async (file, maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, 
     if (!sapChieu) return responsesHelper(400, "Thiếu trạng thái sắp chiếu");
     if (!hot) return responsesHelper(400, "Thiếu trạng thái hot");
     if (!danhGia) return responsesHelper(400, "Thiếu trạng thái đánh giá");
-
+    console.log(ngayKhoiChieu);
     const movie = await MovieModel.findById(maPhim);
     if (!movie) return responsesHelper(400, "Xử lý không thành công", `Tên phim: ${tenPhim} không tồn tại`);
 
@@ -184,7 +186,7 @@ const capNhatPhim = async (file, maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, 
     };
 
     // nếu file hình ảnh tồn tại thì mới update hình ảnh
-    if (file) {
+    if (isFileValidHelper(file)) {
         // xoá ảnh cũ
         await deleteImg(movie.tenHinhAnh);
 
