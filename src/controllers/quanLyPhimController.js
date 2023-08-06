@@ -42,7 +42,7 @@ const layThongTinLichChieuHeThongRap = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
 
 const layThongTinPhim = async (req, res, next) => {
     try {
@@ -54,11 +54,25 @@ const layThongTinPhim = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
+
+const capNhatPhim = async (req, res, next) => {
+    try {
+        const { maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, dangChieu, sapChieu, hot, danhGia } = req.body;
+
+        const result = await quanLyPhimService.capNhatPhim(req.file, maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, dangChieu, sapChieu, hot, danhGia);
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     themPhimUploadHinh,
     xoaPhim,
     layDanhSachPhim,
     layThongTinLichChieuHeThongRap,
-    layThongTinPhim
+    layThongTinPhim,
+    capNhatPhim,
 };

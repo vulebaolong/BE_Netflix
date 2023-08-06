@@ -8,6 +8,7 @@ const upload = multer();
 router.get("/LayDanhSachPhim", quanLyPhimController.layDanhSachPhim);
 router.get("/LayThongTinPhim", quanLyPhimController.layThongTinPhim);
 router.post("/ThemPhimUploadHinh", upload.single("hinhAnh"), quanLyPhimController.themPhimUploadHinh);
+router.post("/CapNhatPhim", upload.single("hinhAnh"), quanLyPhimController.capNhatPhim);
 router.delete("/XoaPhim", quanLyPhimController.xoaPhim);
 
 module.exports = router;

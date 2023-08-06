@@ -164,10 +164,54 @@ const layThongTinPhim = async (maPhim) => {
     return responsesHelper(200, "Xử lý thành công", movie);
 };
 
+const capNhatPhim = async (file, maPhim, tenPhim, trailer, moTa, ngayKhoiChieu, dangChieu, sapChieu, hot, danhGia) => {
+    if (!maPhim) return responsesHelper(400, "Thiếu mã phim");
+    if (!tenPhim) return responsesHelper(400, "Thiếu tên phim");
+    if (!trailer) return responsesHelper(400, "Thiếu trailer");
+    if (!moTa) return responsesHelper(400, "Thiếu mô tả");
+    if (!ngayKhoiChieu) return responsesHelper(400, "Thiếu ngày khởi chiếu");
+    if (!dangChieu) return responsesHelper(400, "Thiếu trạng thái đang chiếu");
+    if (!sapChieu) return responsesHelper(400, "Thiếu trạng thái sắp chiếu");
+    if (!hot) return responsesHelper(400, "Thiếu trạng thái hot");
+    if (!danhGia) return responsesHelper(400, "Thiếu trạng thái đánh giá");
+    if (!file) return responsesHelper(400, "Thiếu hình ảnh");
+    // console.log(file);
+
+    const movie = await MovieModel.findById(maPhim);
+    if (!movie) return responsesHelper(400, "Xử lý không thành công", `Tên phim: ${tenPhim} không tồn tại`);
+
+    // xoá ảnh cũ
+    await deleteImg(movie.tenHinhAnh);
+
+    // thêm ảnh mới
+    const objHinhAnh = await uploadImg(file);
+
+    // update phim
+    const movieUpdate = await MovieModel.findByIdAndUpdate(
+        maPhim,
+        {
+            tenPhim,
+            trailer,
+            moTa,
+            ngayKhoiChieu,
+            dangChieu,
+            sapChieu,
+            hot,
+            danhGia,
+            hinhAnh: objHinhAnh.hinhAnh,
+            tenHinhAnh: objHinhAnh.tenHinhAnh,
+        },
+        { new: true }
+    );
+
+    return responsesHelper(200, "Xử lý thành công", movieUpdate);
+};
+
 module.exports = {
     themPhimUploadHinh,
     xoaPhim,
     layDanhSachPhim,
     layThongTinLichChieuHeThongRap,
     layThongTinPhim,
+    capNhatPhim,
 };
