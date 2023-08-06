@@ -112,6 +112,7 @@ const changeObj = (item) => {
 const thongTinDatVe = async (user) => {
     const datVe = changeObj(await DatVeModel.findOne({ user_ID: user.id }).select("-createdAt -updatedAt -__v"));
     const userDb = changeObj(await UserModel.findById(user.id).select("-createdAt -updatedAt -__v"));
+    delete userDb._id;
 
     let thongTinDatVe = [];
 
@@ -131,6 +132,7 @@ const thongTinDatVe = async (user) => {
 
                 return {
                     danhSachGhe: danhSachGhe.flatMap((arr) => arr),
+                    maVe: datVe._id,
                     ...movie,
                 };
             })
