@@ -6,7 +6,7 @@ const dangKy = async (req, res, next) => {
 
         const result = await quanLyNguoiDungService.dangKy(taiKhoan, matKhau, email, soDt, hoTen);
 
-        res.status(result.code).json(newUser);
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }
