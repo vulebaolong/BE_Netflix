@@ -10,7 +10,7 @@ const router = express.Router();
 
 // health check
 router.get("/welcome", (req, res) => {
-    console.log("health check");
+    // console.log("health check");
     res.status(200).json("OK");
 });
 
