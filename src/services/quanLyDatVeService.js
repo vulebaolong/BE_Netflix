@@ -8,7 +8,10 @@ const changeObj = (item) => {
     return JSON.parse(JSON.stringify(item));
 };
 const taoLichChieu = async (maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe) => {
-    // const newData = { maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe };
+    if (!maPhim_ID) return responsesHelper(400, "Thiếu maPhim_ID");
+    if (!maCumRap_ID) return responsesHelper(400, "Thiếu maCumRap_ID");
+    if (!ngayChieuGioChieu) return responsesHelper(400, "Thiếu ngayChieuGioChieu");
+    if (!giaVe) return responsesHelper(400, "Thiếu giaVe");
 
     const movie = await MovieModel.findById(maPhim_ID);
     const cumrap = await CumRapModel.findOne({ maCumRap: maCumRap_ID });
@@ -28,10 +31,16 @@ const taoLichChieu = async (maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe) =>
 };
 
 const layDanhSachPhongVe = async (maLichChieu) => {
+    if (!maLichChieu) return responsesHelper(400, "Thiếu maLichChieu");
+
     const lichChieu = await LichChieuModel.findById(maLichChieu);
+
     const cumRap = await CumRapModel.findOne({ maCumRap: lichChieu.maCumRap_ID });
+
     const movie = await MovieModel.findById(lichChieu.maPhim_ID).select("tenPhim hinhAnh");
+
     const { danhSachVe } = lichChieu;
+
     const renderGiaVe = (loaiGhe) => {
         let giaVe = lichChieu.giaVe;
         if (loaiGhe === "Vip") {
@@ -39,6 +48,7 @@ const layDanhSachPhongVe = async (maLichChieu) => {
         }
         return giaVe;
     };
+
     const rederLoaiGhe = (tenGhe) => {
         let loaiGhe = "Thuong";
         if (
@@ -53,6 +63,7 @@ const layDanhSachPhongVe = async (maLichChieu) => {
         }
         return loaiGhe;
     };
+
     const danhSachGhe = Array(160)
         .fill()
         .map((_, i) => {
@@ -97,6 +108,9 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 };
 
 const datVe = async (maLichChieu, danhSachVe, user) => {
+    if (!maLichChieu) return responsesHelper(400, "Thiếu maLichChieu");
+    if (!danhSachVe) return responsesHelper(400, "Thiếu danhSachVe");
+    
     const lichChieuCheck = await LichChieuModel.findById(maLichChieu);
     const danhSachVeCheck = lichChieuCheck.danhSachVe;
 
