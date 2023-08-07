@@ -7,6 +7,7 @@ const changeObj = (item) => {
     return JSON.parse(JSON.stringify(item));
 };
 const layThongTinLichChieuPhim = async (maPhim) => {
+    const heThongRap = changeObj(await HeThongRapModel.find().select("logo maHeThongRap tenHeThongRap"));
     const movie = changeObj(await MovieModel.findById(maPhim).select("-lichChieuTheoPhim -__v -updatedAt -createdAt"));
 
     const heThongRapChieu = await Promise.all(
@@ -34,6 +35,7 @@ const layThongTinLichChieuPhim = async (maPhim) => {
             return item;
         })
     );
+
     const result = {
         ...movie,
         heThongRapChieu,
@@ -42,6 +44,8 @@ const layThongTinLichChieuPhim = async (maPhim) => {
 };
 
 const layThongTinLichChieuHeThongRap = async () => {
+    const heThongRap = changeObj(await HeThongRapModel.find().select("logo maHeThongRap tenHeThongRap"));
+
     const result = await Promise.all(
         heThongRap.map(async (item) => {
             item.lstCumRap = changeObj(
