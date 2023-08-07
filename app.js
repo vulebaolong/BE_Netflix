@@ -13,7 +13,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     console.log(origin);
     // Kiểm tra xem origin có trong danh sách allowedOrigins hay không
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1 || (origin === undefined && req.headers['x-render-healthcheck'] === '1')) {
       callback(null, true); // Cho phép truy cập
     } else {
       callback(new Error('Không cho phép truy cập từ nguồn này')); // Từ chối truy cập
