@@ -30,6 +30,21 @@ const taoLichChieu = async (maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe) =>
     return responsesHelper(200, "Xử Lý Thành Công", "Tạo Lịch Chiếu Thành công");
 };
 
+const xoaLichChieu = async (maLichChieu) => {
+    if (!maLichChieu) return responsesHelper(400, "Thiếu maLichChieu");
+
+    const lichChieu = changeObj(await LichChieuModel.findById(maLichChieu));
+    if (!lichChieu) return responsesHelper(400, "Xử Lý Không Thành Công", "Lịch chiếu không tồn tại");
+
+    await LichChieuModel.deleteOne({ _id: maLichChieu });
+
+    await MovieModel.updateMany({ _id: lichChieu.maPhim_ID }, { $pull: { lichChieuTheoPhim: { _id: maLichChieu } } });
+
+    await CumRapModel.updateMany({ maCumRap: lichChieu.maCumRap_ID }, { $pull: { lichChieuTheoCumRap: { _id: maLichChieu } } });
+
+    return responsesHelper(200, "Xử Lý Thành Công", maLichChieu);
+};
+
 const layDanhSachPhongVe = async (maLichChieu) => {
     if (!maLichChieu) return responsesHelper(400, "Thiếu maLichChieu");
 
@@ -110,7 +125,7 @@ const layDanhSachPhongVe = async (maLichChieu) => {
 const datVe = async (maLichChieu, danhSachVe, user) => {
     if (!maLichChieu) return responsesHelper(400, "Thiếu maLichChieu");
     if (!danhSachVe) return responsesHelper(400, "Thiếu danhSachVe");
-    
+
     const lichChieuCheck = await LichChieuModel.findById(maLichChieu);
     const danhSachVeCheck = lichChieuCheck.danhSachVe;
 
@@ -198,4 +213,5 @@ module.exports = {
     taoLichChieu,
     layDanhSachPhongVe,
     datVe,
+    xoaLichChieu,
 };

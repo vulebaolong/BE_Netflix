@@ -16,6 +16,18 @@ const taoLichChieu = async (req, res, next) => {
     }
 };
 
+const xoaLichChieu = async (req, res, next) => {
+    try {
+        const maLichChieu = req.query.maLichChieu;
+        
+        const result = await quanLyDatVeService.xoaLichChieu(maLichChieu);
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 const layDanhSachPhongVe = async (req, res, next) => {
     try {
         const maLichChieu = req.query.MaLichChieu;
@@ -46,4 +58,5 @@ module.exports = {
     taoLichChieu,
     layDanhSachPhongVe,
     datVe,
+    xoaLichChieu
 };
