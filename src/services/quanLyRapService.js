@@ -53,8 +53,6 @@ const layThongTinLichChieuHeThongRap = async () => {
 
             item.lstCumRap = await Promise.all(
                 item.lstCumRap.map(async (item2) => {
-                 
-
                     item2.danhSachPhim = await MovieModel.aggregate([
                         // Lọc các documents có maCumRap_ID là "bhd-star-cineplex-3-2"
                         { $match: { "lichChieuTheoPhim.maCumRap_ID": item2.maCumRap } },
@@ -103,13 +101,19 @@ const layThongTinLichChieuHeThongRap = async () => {
     return responsesHelper(200, "Xử lý thành công", result);
 };
 
-const layThongTinHeThongRap = async () => { 
-    const heThongRap = await HeThongRapModel.find().select("-createdAt -updatedAt -__v")
-    return responsesHelper(200, "Xử lý thành công", heThongRap)
- }
+const layThongTinHeThongRap = async () => {
+    const heThongRap = await HeThongRapModel.find().select("-createdAt -updatedAt -__v");
+    return responsesHelper(200, "Xử lý thành công", heThongRap);
+};
+
+const layThongTinCumRapTheoHeThong = async (maHeThongRap) => {
+    const cumRap = await CumRapModel.find({ maHeThongRap_ID: maHeThongRap }).select("maCumRap tenCumRap");
+    return responsesHelper(200, "Xử lý thành công", cumRap);
+};
 
 module.exports = {
     layThongTinLichChieuPhim,
     layThongTinLichChieuHeThongRap,
-    layThongTinHeThongRap
+    layThongTinHeThongRap,
+    layThongTinCumRapTheoHeThong,
 };

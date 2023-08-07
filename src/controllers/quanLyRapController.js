@@ -32,8 +32,21 @@ const layThongTinHeThongRap = async (req, res, next) => {
     }
 };
 
+const layThongTinCumRapTheoHeThong = async (req, res, next) => {
+    try {
+        const maHeThongRap = req.query.maHeThongRap
+        
+        const result = await quanLyRapController.layThongTinCumRapTheoHeThong(maHeThongRap);
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     layThongTinLichChieuPhim,
     layThongTinLichChieuHeThongRap,
     layThongTinHeThongRap,
+    layThongTinCumRapTheoHeThong,
 };
