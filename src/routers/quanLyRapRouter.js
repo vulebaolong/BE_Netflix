@@ -7,6 +7,7 @@ router.get("/LayThongTinLichChieuPhim", quanLyRapController.layThongTinLichChieu
 router.get("/LayThongTinLichChieuHeThongRap", quanLyRapController.layThongTinLichChieuHeThongRap);
 router.get("/LayThongTinHeThongRap", quanLyRapController.layThongTinHeThongRap);
 router.get("/LayThongTinCumRapTheoHeThong", quanLyRapController.layThongTinCumRapTheoHeThong);
+router.post("/TaoCumRap", quanLyRapController.taoCumRap);
 
 
 module.exports = router;

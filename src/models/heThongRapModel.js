@@ -5,7 +5,6 @@ const HeThongRapSchema = new mongoose.Schema(
         maHeThongRap: { type: String, trim: true },
         tenHeThongRap: { type: String, trim: true },
         logo: { type: String, trim: true },
-        createdAt: { type: Date, default: Date.now },
     },
     {
         collection: "HeThongRap",

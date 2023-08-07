@@ -115,9 +115,21 @@ const layThongTinCumRapTheoHeThong = async (maHeThongRap) => {
     return responsesHelper(200, "Xử lý thành công", cumRap);
 };
 
+const taoCumRap = async () => {
+    const maHeThongRap_ID = "MegaGS";
+    const diaChi = "19 Cao Thắng, Q.3";
+    const maCumRap = "megags-cao-thang";
+    const tenCumRap = "MegaGS - Cao Thắng";
+    const hinhAnh = "https://s3img.vcdn.vn/123phim/2021/01/bhd-star-bitexco-16105952137769.png";
+
+    const cumRap = await CumRapModel.create({ maHeThongRap_ID, maCumRap, tenCumRap, diaChi, hinhAnh });
+    return responsesHelper(200, "Xử lý thành công", cumRap);
+};
+
 module.exports = {
     layThongTinLichChieuPhim,
     layThongTinLichChieuHeThongRap,
     layThongTinHeThongRap,
     layThongTinCumRapTheoHeThong,
+    taoCumRap,
 };

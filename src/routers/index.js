@@ -10,7 +10,8 @@ const router = express.Router();
 
 // health check
 router.get("/welcome", (req, res) => {
-    res.status(200).json({ status: "success", message: "Welcome movie API vulebaolong" });
+    console.log("health check");
+    res.status(200).json("OK");
 });
 
 router.use("/QuanLyNguoiDung", quanLyNguoiDungRouter);

@@ -34,9 +34,21 @@ const layThongTinHeThongRap = async (req, res, next) => {
 
 const layThongTinCumRapTheoHeThong = async (req, res, next) => {
     try {
-        const maHeThongRap = req.query.maHeThongRap
-        
+        const maHeThongRap = req.query.maHeThongRap;
+
         const result = await quanLyRapController.layThongTinCumRapTheoHeThong(maHeThongRap);
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const taoCumRap = async (req, res, next) => {
+    try {
+        const { maHeThongRap_ID, maCumRap, tenCumRap, diaChi, hinhAnh } = req.body;
+
+        const result = await quanLyRapController.taoCumRap(maHeThongRap_ID, maCumRap, tenCumRap, diaChi, hinhAnh);
 
         res.status(result.code).json(result);
     } catch (error) {
@@ -49,4 +61,5 @@ module.exports = {
     layThongTinLichChieuHeThongRap,
     layThongTinHeThongRap,
     layThongTinCumRapTheoHeThong,
+    taoCumRap,
 };
