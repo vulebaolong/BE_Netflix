@@ -12,6 +12,28 @@ const layThongTinLichChieuPhim = async (req, res, next) => {
     }
 };
 
+const layThongTinLichChieuHeThongRap = async (req, res, next) => {
+    try {
+        const result = await quanLyRapController.layThongTinLichChieuHeThongRap();
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const layThongTinHeThongRap = async (req, res, next) => {
+    try {
+        const result = await quanLyRapController.layThongTinHeThongRap();
+
+        res.status(result.code).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     layThongTinLichChieuPhim,
+    layThongTinLichChieuHeThongRap,
+    layThongTinHeThongRap,
 };

@@ -34,15 +34,6 @@ const layDanhSachPhim = async (req, res, next) => {
     }
 };
 
-const layThongTinLichChieuHeThongRap = async (req, res, next) => {
-    try {
-        const result = await quanLyPhimService.layThongTinLichChieuHeThongRap();
-
-        res.status(result.code).json(result);
-    } catch (error) {
-        next(error);
-    }
-};
 
 const layThongTinPhim = async (req, res, next) => {
     try {
@@ -72,7 +63,6 @@ module.exports = {
     themPhimUploadHinh,
     xoaPhim,
     layDanhSachPhim,
-    layThongTinLichChieuHeThongRap,
     layThongTinPhim,
     capNhatPhim,
 };
