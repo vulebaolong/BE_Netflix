@@ -18,7 +18,7 @@ const xoaPhim = async (req, res, next) => {
 
         const result = await quanLyPhimService.xoaPhim(maPhim);
 
-        res.status(200).json("OKE");
+        res.status(result.code).json(result);
     } catch (error) {
         next(error);
     }

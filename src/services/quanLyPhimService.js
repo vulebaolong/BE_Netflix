@@ -62,14 +62,17 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
 };
 
 const xoaPhim = async (maPhim) => {
-    const movie = await MovieModel.findById(maPhim);
-    console.log("movie.tenHinhAnh", movie.tenHinhAnh);
-    return await deleteImg(movie.tenHinhAnh);
+    const movie = await MovieModel.findByIdAndDelete(maPhim).select("-lichChieuTheoPhim -createdAt -updatedAt -__v");
+
+    // xoá ảnh cũ
+    await deleteImg(movie.tenHinhAnh);
+
+    return responsesHelper(200, "Xử lý thành công", movie);
 };
 
 const layDanhSachPhim = async () => {
-    const movies = await MovieModel.find().select("-lichChieuTheoPhim -createdAt -updatedAt -__v -tenHinhAnh");
-    return responsesHelper(200, "Xử lý thành công", movies);
+    const movie = await MovieModel.find().select("-lichChieuTheoPhim -createdAt -updatedAt -__v -tenHinhAnh");
+    return responsesHelper(200, "Xử lý thành công", movie);
 };
 
 const changeObj = (item) => {
