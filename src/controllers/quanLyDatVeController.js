@@ -2,11 +2,11 @@ const quanLyDatVeService = require("../services/quanLyDatVeService");
 
 const taoLichChieu = async (req, res, next) => {
     try {
-        const { maPhim, maCumRap, ngayChieuGioChieu, giaVe } = req.body;
+        const { maPhim, maRap, ngayChieuGioChieu, giaVe } = req.body;
         
         const maPhim_ID = maPhim;
 
-        const maCumRap_ID = maCumRap;
+        const maCumRap_ID = maRap;
 
         const result = await quanLyDatVeService.taoLichChieu(maPhim_ID, maCumRap_ID, ngayChieuGioChieu, giaVe);
 
