@@ -55,13 +55,10 @@ app.use(mongoSanitize());
 // nén (compress) các tài nguyên HTTP trước khi gửi từ máy chủ (server) tới trình duyệt (browser)
 app.use(compression());
 
-
-
-
-
-
 // express.json(): body => JSON
 app.use(express.json());
+//  ===============MIDLEWARAE =========================
+
 
 app.use("/api/v1", routers);
 
