@@ -1,7 +1,7 @@
 //app.js
 const express = require("express");
 const routers = require("./src/routers");
-// const cors = require("cors");
+const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
@@ -27,7 +27,7 @@ const corsOptions = {
 };
 
 // app.use(cors(corsOptions));
-// app.use(cors());
+app.use(cors());
 
 //  ===============MIDLEWARAE =========================
 // bảo vệ cho phép tài nguyên trong ứng dụng của bạn được truy cập từ các nguồn gốc khác nhau
