@@ -5,7 +5,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
-// const helmet = require("helmet");
+const helmet = require("helmet");
 const responsesHelper = require("./src/helpers/responsesHelper");
 
 
