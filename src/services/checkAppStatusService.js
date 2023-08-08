@@ -1,16 +1,17 @@
 const responsesHelper = require("../helpers/responsesHelper");
 
 const check = async (event) => {
-    let status;
+    console.log(event);
+    let statusApp;
     if (event === "app.suspended") {
-        status = "suspended";
+        statusApp = "suspended";
         // Cập nhật trạng thái, gửi thông báo, v.v.
     } else if (event === "app.resumed") {
-        status = "resumed";
+        statusApp = "resumed";
         // Cập nhật trạng thái, gửi thông báo, v.v.
     }
 
-    return responsesHelper(200, "Xử Lý Thành Công", status);
+    return responsesHelper(200, "Xử Lý Thành Công", statusApp);
 };
 
 module.exports = {
