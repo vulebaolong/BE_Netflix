@@ -31,12 +31,12 @@ app.use(cors());
 
 //  ===============MIDLEWARAE =========================
 // bảo vệ cho phép tài nguyên trong ứng dụng của bạn được truy cập từ các nguồn gốc khác nhau
-app.use(
-  helmet({
-      contentSecurityPolicy: true,
-      crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
-);
+// app.use(
+//   helmet({
+//       contentSecurityPolicy: true,
+//       crossOriginResourcePolicy: { policy: "cross-origin" },
+//   })
+// );
 
 // limit giới hạn tần suất các yêu cầu (requests) từ một địa chỉ IP cụ thể
 const limiter = () => {
