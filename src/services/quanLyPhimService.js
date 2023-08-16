@@ -6,6 +6,7 @@ const HeThongRapModel = require("../models/heThongRapModel");
 const CumRapModel = require("../models/cumRapModel");
 const LichChieuModel = require("../models/lichChieuModel");
 const isFileValidHelper = require("../helpers/isFileValidHelper");
+const DatVeModel = require("../models/datVeModel");
 function convertToBoolean(value) {
     if (value === "true") return true;
     if (value === "false") return false;
@@ -62,7 +63,11 @@ const themPhimUploadHinh = async (file, tenPhim, trailer, moTa, ngayKhoiChieu, d
 
 const xoaPhim = async (maPhim) => {
     const movie = await MovieModel.findByIdAndDelete(maPhim).select("-lichChieuTheoPhim -createdAt -updatedAt -__v");
-
+    await DatVeModel.updateMany(
+        {"thongTinDatVe.maPhim_ID": maPhim},
+        {"$pull": {"thongTinDatVe": {"maPhim_ID": maPhim}}}
+    )
+    await LichChieuModel.deleteMany({"maPhim_ID": maPhim})
     // xoá ảnh cũ
     await deleteImg(movie.tenHinhAnh);
 

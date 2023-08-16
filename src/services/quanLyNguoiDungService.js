@@ -119,7 +119,9 @@ const thongTinDatVe = async (user) => {
     if (datVe) {
         thongTinDatVe = await Promise.all(
             datVe.thongTinDatVe.map(async (item) => {
+                
                 const movie = changeObj(await MovieModel.findById(item.maPhim_ID).select("tenPhim hinhAnh"));
+             
                 delete movie._id;
 
                 const danhSachGhe = await Promise.all(
